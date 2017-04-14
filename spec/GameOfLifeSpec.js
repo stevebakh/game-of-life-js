@@ -43,4 +43,23 @@ describe("In the Game of Life", () => {
             });
         });
     });
+
+    /**
+     * The following tests look for patterns as described on the 
+     * Game of Life Wikipedia page.
+     * See: https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life#Examples_of_patterns
+     */
+    describe("Over multiple iterations of a game", () => {
+        describe("some patterns oscillate between several states", () => {
+            it("giving rise to a Blinker", () => {
+                let first = [{x: 2, y: 3}, {x: 3, y: 3}, {x: 4, y: 3}];
+                let second = [{x: 3, y: 2}, {x: 3, y: 3}, {x: 3, y: 4}];
+                let game = new GameOfLife(first);
+                
+                expect(game.iterate()).toEqual(second);
+                expect(game.iterate()).toEqual(first);
+                expect(game.iterate()).toEqual(second);
+            });
+        });
+    });
 });
