@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 describe("In the Game of Life", () => {
     const GameOfLife = require("../lib/GameOfLife");
 
