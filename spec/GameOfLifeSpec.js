@@ -55,10 +55,41 @@ describe("In the Game of Life", () => {
                 let first = [{x: 2, y: 3}, {x: 3, y: 3}, {x: 4, y: 3}];
                 let second = [{x: 3, y: 2}, {x: 3, y: 3}, {x: 3, y: 4}];
                 let game = new GameOfLife(first);
-                
                 expect(game.iterate()).toEqual(second);
                 expect(game.iterate()).toEqual(first);
                 expect(game.iterate()).toEqual(second);
+            });
+
+            it("giving rise to a Beacon", () => {
+                let first = [{x: 2, y: 3}, {x: 2, y: 3}, {x: 3, y: 2}, {x: 3, y: 3},
+                             {x: 4, y: 4}, {x: 4, y: 5}, {x: 5, y: 4}, {x: 5, y: 5}];
+
+                let second = [{x: 2, y: 3}, {x: 2, y: 3}, {x: 3, y: 2},
+                              {x: 4, y: 5}, {x: 5, y: 4}, {x: 5, y: 5}];
+
+                let game = new GameOfLife(first);
+                expect(game.iterate().sort).toEqual(second.sort);
+                expect(game.iterate().sort).toEqual(first.sort);
+                expect(game.iterate().sort).toEqual(second.sort);
+            });
+        });
+
+        describe("some patterns form still lifes", () => {
+            it("such as the block", () => {
+                let seed = [{x: 2, y: 2}, {x: 2, y: 3}, {x: 3, y: 2}, {x: 3, y: 3}];
+                let game = new GameOfLife(seed);
+                expect(game.iterate()).toEqual(seed);
+                expect(game.iterate()).toEqual(seed);
+            });
+
+            it("such as the beehive", () => {
+                let seed = [{x: 3, y: 2}, {x: 4, y: 2},
+                            {x: 2, y: 3}, {x: 5, y: 3},
+                            {x: 3, y: 4}, {x: 4, y: 4}];
+
+                let game = new GameOfLife(seed);
+                expect(game.iterate().sort).toEqual(seed.sort);
+                expect(game.iterate().sort).toEqual(seed.sort);
             });
         });
     });
