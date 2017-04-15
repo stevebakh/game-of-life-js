@@ -1,0 +1,23 @@
+{
+  "name": "game-of-life",
+  "version": "1.0.0",
+  "description": "Javascript version of Conway's Game of Life",
+  "main": "index.js",
+  "scripts": {
+    "test": "jasmine"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stevebakh/game-of-life-js.git"
+  },
+  "author": "Steven Bakhtiari",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stevebakh/game-of-life-js/issues"
+  },
+  "homepage": "https://github.com/stevebakh/game-of-life-js#readme",
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "jasmine": "^2.5.3"
+  }
+}
