@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <style>
+            * {
+                font-family: sans-serif;
+            }
+            html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+            }
+            canvas {
+                display: block;
+                background-color: #999;
+            }
+            #controls {
+                position: absolute;
+                top: 20px;
+                left: 20px;
+                background-color:rgba(204, 204, 204, 0.8);
+                box-shadow: 0px 0px 50px #666;
+                padding: 10px;
+            }
+
+            #controls button {
+                display: inline-block;
+                border: 1px solid #666;
+                border-radius: 3px;
+                padding: 5px 10px;
+                margin-right: 5px;
+                background: white;
+                background: linear-gradient(#eee, #aaa);
+                font-size: 12px;
+                color: #333;
+                outline: none;
+            }
+
+            #controls button:active  {
+                background: linear-gradient(#ddd, #999);
+                color: #000;
+                outline: none;
+            }
+
+            #controls button:disabled  {
+                background: #ccc;
+                color: #999;
+                border-color: #999;
+            }
+
+            #controls dl {
+                border-left: 1px solid #aaa;
+                display: inline-block;
+                margin: 0;
+            }
+
+            #controls dl dt {
+                color: #333;                
+                display: inline-block;
+                font-size: 14px;
+                margin-left: 5px;
+            }
+
+            #controls dl dd {
+                display: inline-block;
+                font-size: 14px;
+                margin: 0;
+            }
+        </style>
+        <script src="lib/GameOfLife.js"></script>
+    </head>
+    <body>
+        <canvas id="world"></canvas>
+        <div id="controls">
+            <button type="button" id="run-button">Run</button>
+            <button type="button" id="reset-button">Reset</button>
+            <dl>
+                <dt>generation:</dt>
+                <dd></dd>
+
+                <dt>population:</dt>
+                <dd></dd>
+            </dl>
+        </div>
+    </body>
+    <script>
+        window.addEventListener('load', () => {
+            const canvas = document.getElementById("world");
+            const context = canvas.getContext("2d");
+            const runButton = document.getElementById("run-button");
+            const resetButton = document.getElementById("reset-button");
+            const dds = document.getElementsByTagName("dd");
+            const generationDD = dds.item(0);
+            const populationDD = dds.item(1);
+            const cellSize = 10;
+            const delay = 200;
+            var gameOfLife;
+            var cells = [];
+
+            generationDD.innerText = 0;
+            populationDD.innerText = 0;
+
+            const resizeCanvas = () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                cells.forEach(cell => drawCell(cell.x, cell.y));
+            };
+
+            const seedCell = (e) => {
+                let x = Math.floor(e.clientX / cellSize);
+                let y = Math.floor(e.clientY / cellSize);
+                if (!cells.find(c => c.x == x && c.y == y)) {
+                    populationDD.innerText = cells.push({x, y});
+                    drawCell(x, y);
+                }
+            };
+
+            const drawCell = (x, y) => {
+                context.fillStyle = '#666';
+                context.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+            };
+
+            const resetWorld = () => {
+                gameOfLife = null;
+                generationDD.innerText = 0;
+                populationDD.innerText = 0;
+                cells = [];
+                context.clearRect(0, 0, canvas.width, canvas.height);
+            };
+
+            resizeCanvas();
+
+            window.addEventListener('resize', resizeCanvas);
+            canvas.addEventListener('click', seedCell);
+            canvas.addEventListener('mousedown', () => canvas.addEventListener('mousemove', seedCell));
+            canvas.addEventListener('mouseup', () => canvas.removeEventListener('mousemove', seedCell));
+            resetButton.addEventListener('click', resetWorld);
+            
+            var intervalId;
+            runButton.addEventListener('click', (e) => {
+                if (e.target.running) {
+                    e.target.running = resetButton.disabled = false;
+                    e.target.innerText = "Run";
+                    clearInterval(intervalId);
+                } else {
+                    e.target.running = resetButton.disabled = true;
+                    e.target.innerText = "Stop";
+                    gameOfLife = new GameOfLife(cells);
+                    intervalId = setInterval(() => {
+                        context.clearRect(0, 0, canvas.width, canvas.height);
+                        cells = gameOfLife.iterate();
+                        generationDD.innerText++;
+                        populationDD.innerText = cells.length;
+                        cells.forEach(cell => drawCell(cell.x, cell.y));
+                    }, delay);
+                }
+            });
+        });
+    </script>
+</html>
